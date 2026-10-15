@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace SchoolApp.Models;
+﻿namespace SchoolApp.Models;
 
 public partial class Teacher
 {

@@ -28,8 +28,8 @@ public partial class SchoolMvcDbfirstContext : DbContext
 
     public virtual DbSet<User> Users { get; set; }
 
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer("Name=ConnectionStrings:DevConnection");
+    //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    //    => optionsBuilder.UseSqlServer("Name=ConnectionStrings:DevConnection");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -39,7 +39,7 @@ public partial class SchoolMvcDbfirstContext : DbContext
         {
             entity.HasIndex(e => e.Name, "UQ_Capabilities_Name").IsUnique();
 
-            entity.Property(e => e.Description).HasMaxLength(255);
+            entity.Property(e => e.Description).HasMaxLength(255);  // Default
             entity.Property(e => e.Name).HasMaxLength(100);
         });
 
