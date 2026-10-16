@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using SchoolApp.Data;
+using SchoolApp.Repositories;
 
 namespace SchoolApp
 {
@@ -13,6 +14,8 @@ namespace SchoolApp
                 ?? throw new InvalidOperationException("Connection 'DevConnection' not found.");
 
             builder.Services.AddDbContext<SchoolMvcDbfirstContext>(options => options.UseSqlServer(connString));
+
+            builder.Services.AddRepositories();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
