@@ -1,5 +1,4 @@
 ﻿using SchoolApp.Data;
-using SchoolApp.Models;
 
 namespace SchoolApp.Repositories;
 

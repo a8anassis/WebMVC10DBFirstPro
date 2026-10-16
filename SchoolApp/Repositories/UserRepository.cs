@@ -19,7 +19,8 @@ public class UserRepository : BaseRepository<User>, IUserRepository
             .FirstOrDefaultAsync(u => u.Username == username || u.Email == username);
     }
 
-    public async Task<PaginatedResult<User>> GetUsersAsync(int pageNumber, int pageSize, List<Expression<Func<User, bool>>> predicates)
+    public async Task<PaginatedResult<User>> GetUsersAsync(int pageNumber, int pageSize, 
+        List<Expression<Func<User, bool>>> predicates)
     {
         IQueryable<User> query = _context.Users;    // δεν εκτελείται
 
