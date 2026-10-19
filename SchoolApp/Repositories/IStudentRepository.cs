@@ -2,7 +2,7 @@
 
 namespace SchoolApp.Repositories
 {
-    public interface IStudentRepository
+    public interface IStudentRepository : IBaseRepository<Student>
     {
         Task<List<Course>> GetStudentCoursesAsync(int studentId);
         Task<Student?> GetByAm(string? am);

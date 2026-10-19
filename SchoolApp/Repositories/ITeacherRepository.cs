@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace SchoolApp.Repositories;
 
-public interface ITeacherRepository
+public interface ITeacherRepository : IBaseRepository<Teacher>
 {
     Task<Teacher?> GetByPhoneNumberAsync(string phoneNumber);
     Task<List<Course>> GetTeacherCoursesAsync(int teacherId);
