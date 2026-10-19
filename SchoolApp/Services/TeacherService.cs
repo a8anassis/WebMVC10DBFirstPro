@@ -14,9 +14,9 @@ public class TeacherService : ITeacherService
     private readonly IEncryptionUtil _encryptionUtil;
     private readonly IUnitOfWork _unitOfWork;
     private IMapper _mapper;
-    private readonly ILogger<UserService> _logger;
+    private readonly ILogger<TeacherService> _logger;
 
-    public TeacherService(IEncryptionUtil encryptionUtil, IUnitOfWork unitOfWork, IMapper mapper, ILogger<UserService> logger)
+    public TeacherService(IEncryptionUtil encryptionUtil, IUnitOfWork unitOfWork, IMapper mapper, ILogger<TeacherService> logger)
     {
         _encryptionUtil = encryptionUtil;
         _unitOfWork = unitOfWork;
