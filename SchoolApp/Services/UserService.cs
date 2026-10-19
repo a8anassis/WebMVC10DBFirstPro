@@ -1,10 +1,13 @@
 ﻿using AutoMapper;
+using Microsoft.Identity.Client;
 using SchoolApp.Core;
 using SchoolApp.Core.Filters;
 using SchoolApp.DTO;
+using SchoolApp.Exceptions;
 using SchoolApp.Models;
 using SchoolApp.Repositories;
 using SchoolApp.Security;
+using System.Linq.Expressions;
 
 namespace SchoolApp.Services
 {
@@ -24,19 +27,80 @@ namespace SchoolApp.Services
             _logger = logger;
         }
 
-        public Task<PaginatedResult<UserReadOnlyDTO>> GetPaginatedUsersFilteredAsync(int pageNumber, int pageSize, UserFiltersDTO userFiltersDTO)
+        public async Task<PaginatedResult<UserReadOnlyDTO>> GetPaginatedUsersFilteredAsync(int pageNumber, int pageSize, 
+            UserFiltersDTO userFiltersDTO)
         {
-            throw new NotImplementedException();
+            List<User> users = [];
+            List<Expression<Func<User, bool>>> predicates = [];
+
+            if (!string.IsNullOrEmpty(userFiltersDTO.Username))
+            {
+                predicates.Add(u => u.Username == userFiltersDTO.Username);
+            }
+
+            if (!string.IsNullOrEmpty(userFiltersDTO.Email))
+            {
+                predicates.Add(u => u.Email == userFiltersDTO.Email);
+            }
+            
+            if (!string.IsNullOrEmpty(userFiltersDTO.UserRole))
+            {
+                predicates.Add(u => u.Role.Name == userFiltersDTO.UserRole);
+            }
+
+            var paginatedResult = await _unitOfWork.UserRepository.GetUsersAsync(pageNumber, pageSize, predicates);
+
+            var dtoResult = new PaginatedResult<UserReadOnlyDTO>()
+            {
+                Data = _mapper.Map<List<UserReadOnlyDTO>>(paginatedResult.Data),
+                TotalRecords = paginatedResult.TotalRecords,
+                PageNumber = paginatedResult.PageNumber,
+                PageSize = paginatedResult.PageSize
+            };
+
+            _logger.LogInformation("Retrieved {Count} users", dtoResult.Data.Count);
+            return dtoResult;
         }
 
-        public Task<UserReadOnlyDTO?> GetUserByUsernameAsync(string username)
+        public async Task<UserReadOnlyDTO?> GetUserByUsernameAsync(string username)
         {
-            throw new NotImplementedException();
+            try
+            {
+                User? user = await _unitOfWork.UserRepository.GetUserByUsernameAsync(username);
+
+                if (user is null)
+                {
+                    throw new EntityNotFoundException("User with " + username + " not found.");
+                }
+
+                _logger.LogInformation("User found with username={Username}", username);
+                return _mapper.Map<UserReadOnlyDTO>(user);
+            }
+            catch (EntityNotFoundException)
+            {
+                _logger.LogError("Error retreiving user with username={Username}.", username);
+                throw;
+            }
         }
 
-        public Task<User?> VerifyAndGetUserAsync(UserLoginDTO credentials)
+        public async Task<User?> VerifyAndGetUserAsync(UserLoginDTO credentials)
         {
-            throw new NotImplementedException();
+            try
+            {
+                User? user = await _unitOfWork.UserRepository.GetUserByUsernameAsync(credentials.Username!);
+
+                if (user is null || !_encryptionUtil.IsValidPassword(credentials.Password!, user.Password))
+                {
+                    throw new EntityNotAuthorizedException("Bad Credentials");
+                }
+                _logger.LogInformation("User with username={Username} verified for login.", credentials.Username);
+                return user;
+            }
+            catch (EntityNotAuthorizedException)
+            {
+                _logger.LogError("Authentication failed for username={Username}", credentials.Username);
+                return null;
+            }
         }
     }
 }
