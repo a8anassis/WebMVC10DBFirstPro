@@ -16,6 +16,14 @@ public class TeacherService : ITeacherService
     private IMapper _mapper;
     private readonly ILogger<UserService> _logger;
 
+    public TeacherService(IEncryptionUtil encryptionUtil, IUnitOfWork unitOfWork, IMapper mapper, ILogger<UserService> logger)
+    {
+        _encryptionUtil = encryptionUtil;
+        _unitOfWork = unitOfWork;
+        _mapper = mapper;
+        _logger = logger;
+    }
+
     public async Task SignUpUserAsync(TeacherSignupDTO teacherSignupDTO)
     {
         Teacher teacher = _mapper.Map<Teacher>(teacherSignupDTO);
