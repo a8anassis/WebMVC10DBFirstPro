@@ -1,6 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using SchoolApp.Data;
 using SchoolApp.Repositories;
+using SchoolApp.Security;
+using SchoolApp.Services;
 using Serilog;
 
 namespace SchoolApp
@@ -16,7 +18,13 @@ namespace SchoolApp
 
             builder.Services.AddDbContext<SchoolMvcDbfirstContext>(options => options.UseSqlServer(connString));
 
+            builder.Services.AddSingleton<IEncryptionUtil, EncryptionUtil>();
             builder.Services.AddRepositories();
+            builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<ITeacherService, TeacherService>();
+            builder.Services.AddScoped<IApplicationService, ApplicationService>();
+
+
             builder.Services.AddAutoMapper(cfg => cfg.AddProfile<Configuration.MapperConfig>());
             builder.Host.UseSerilog((context, config) =>
             {
