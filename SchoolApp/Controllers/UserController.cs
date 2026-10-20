@@ -136,6 +136,4 @@ public class UserController : Controller
         return RedirectToAction("Login", "User");
     }
 
-
-
 }
