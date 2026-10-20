@@ -51,7 +51,7 @@ public class UserController : Controller
     [AllowAnonymous]
     public IActionResult Login(string? returnUrl = null)
     {
-        if (User.Identity?IsAuthenticated != true)
+        if (User.Identity?.IsAuthenticated != true)
         {
             ViewData["ReturnUrl"] = returnUrl;
             return View();
@@ -94,9 +94,9 @@ public class UserController : Controller
 
             AuthenticationProperties properties = new()
             {
-                AllowRefresh = true;
-                IsPersistent = userLoginDTO.KeepLoggedIn;
-            }
+                AllowRefresh = true,
+                IsPersistent = userLoginDTO.KeepLoggedIn
+            };
 
             var principal = new ClaimsPrincipal(identity);
 
